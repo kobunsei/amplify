@@ -53,10 +53,10 @@ function App({ signOut, user }) {
       <header className="App-header">
         <h1>Welcome, {user.username}</h1>
         <button onClick={signOut}>Sign out</button>
-        {isTokenFound ? <p>Notification permission enabled</p> : <p>Need notification permission</p>}
+        {/* {isTokenFound ? <p>Notification permission enabled</p> : <p>Need notification permission</p>}
         <h2>Notification:</h2>
         <p>Title: {notification.title}</p>
-        <p>Body: {notification.body}</p>
+        <p>Body: {notification.body}</p> */}
       </header>
     </div>
   );
