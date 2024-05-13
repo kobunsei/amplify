@@ -38,7 +38,13 @@ function App({ signOut, user }) {
   // ネイティブ通知を表示する関数
   const showNotification = (title, body) => {
     if ('Notification' in window && window.Notification.permission === "granted") {
-      new Notification(title, { body, icon: "logo192.png" });
+      console.log('Showing notification'); // 通知表示前にログを出力
+      new Notification(title, {
+        body: body,
+        icon: 'logo192.png'
+      });
+    } else {
+      console.log('Notification permission not granted or not supported'); // 条件分岐が失敗した場合のログ
     }
   };
 
