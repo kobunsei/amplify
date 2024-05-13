@@ -38,7 +38,7 @@ function App({ signOut, user }) {
   // ネイティブ通知を表示する関数
   const showNotification = (title, body) => {
     if ('Notification' in window && window.Notification.permission === "granted") {
-      new Notification(title, { body, icon: "/public/logo192.png" });
+      new Notification(title, { body, icon: "logo192.png" });
     }
   };
 
