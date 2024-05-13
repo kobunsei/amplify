@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useEffect, useState } from 'react';
 import { Amplify } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
@@ -15,6 +14,10 @@ function App({ signOut, user }) {
   // プッシュ通知の許可をリクエスト
   useEffect(() => {
     requestForToken(setTokenFound);
+    // ブラウザの通知許可を求める
+    if ('Notification' in window) {
+      Notification.requestPermission();
+    }
   }, []);
 
   // フォアグラウンドで通知を受信
@@ -25,10 +28,19 @@ function App({ signOut, user }) {
           title: payload.notification.title,
           body: payload.notification.body
         });
+        // ブラウザの通知を表示
+        showNotification(payload.notification.title, payload.notification.body);
         console.log(payload);
       })
       .catch((err) => console.log('failed: ', err));
   }, []);
+
+  // ネイティブ通知を表示する関数
+  const showNotification = (title, body) => {
+    if ('Notification' in window && window.Notification.permission === "granted") {
+      new Notification(title, { body, icon: "/path/to/your/icon.png" });
+    }
+  };
 
   return (
     <div className="App">
