@@ -8,19 +8,28 @@ import { requestForToken, onMessageListener } from './firebase';
 Amplify.configure(awsExports);
 
 function App({ signOut, user }) {
-  const [token, setToken] = useState(''); // 登録トークンを保存するステート
+  // ローカルストレージからトークンを取得して初期化
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem('fcmToken') || '';
+  });
   const [notification, setNotification] = useState({ title: '', body: '' });
 
   // プッシュ通知の許可をリクエスト
   useEffect(() => {
-    requestForToken((tokenFound, tokenValue) => {
-      setToken(tokenValue); // トークンをステートに保存
-    });
+    // ローカルストレージにトークンがない場合のみ新たにトークンをリクエスト
+    if (!token) {
+      requestForToken((tokenValue) => {
+        if (tokenValue) {
+          localStorage.setItem('fcmToken', tokenValue);  // トークンをローカルストレージに保存
+          setToken(tokenValue);
+        }
+      });
+    }
     // ブラウザの通知許可を求める
     if ('Notification' in window) {
       Notification.requestPermission();
     }
-  }, []);
+  }, [token]);
 
   // フォアグラウンドで通知を受信
   useEffect(() => {
