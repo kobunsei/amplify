@@ -14,22 +14,23 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const messaging = getMessaging(firebaseApp);
 
-export const requestForToken = (setTokenFound) => {
+export const requestForToken = (setToken) => {
   return getToken(messaging, { vapidKey: 'BFCOCpO3jSxE5wSzDXR8PTq6TmBMxgMJ-6gTHWQiFEDXOVd3maBYWEGw4Kb1nYu9XqMYp_iY_UEOwf3C2BuYJKI' })
     .then((currentToken) => {
       if (currentToken) {
         console.log('current token for client: ', currentToken);
-        setTokenFound(true);
+        setToken(currentToken); // トークンを直接渡す
       } else {
         console.log('No registration token available. Request permission to generate one.');
-        setTokenFound(false);
+        setToken(''); // トークンがない場合は空文字を設定
       }
     })
     .catch((err) => {
       console.log('An error occurred while retrieving token. ', err);
-      setTokenFound(false);
+      setToken(''); // エラーが発生した場合も空文字を設定
     });
 };
+
 
 export const onMessageListener = () =>
   new Promise((resolve) => {

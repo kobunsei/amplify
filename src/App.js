@@ -8,12 +8,14 @@ import { requestForToken, onMessageListener } from './firebase';
 Amplify.configure(awsExports);
 
 function App({ signOut, user }) {
-  const [isTokenFound, setTokenFound] = useState(false);
+  const [token, setToken] = useState(''); // 登録トークンを保存するステート
   const [notification, setNotification] = useState({ title: '', body: '' });
 
   // プッシュ通知の許可をリクエスト
   useEffect(() => {
-    requestForToken(setTokenFound);
+    requestForToken((tokenFound, tokenValue) => {
+      setToken(tokenValue); // トークンをステートに保存
+    });
     // ブラウザの通知許可を求める
     if ('Notification' in window) {
       Notification.requestPermission();
@@ -53,10 +55,7 @@ function App({ signOut, user }) {
       <header className="App-header">
         <h1>Welcome, {user.username}</h1>
         <button onClick={signOut}>Sign out</button>
-        {/* {isTokenFound ? <p>Notification permission enabled</p> : <p>Need notification permission</p>}
-        <h2>Notification:</h2>
-        <p>Title: {notification.title}</p>
-        <p>Body: {notification.body}</p> */}
+        {token ? <p>FCM Token: {token}</p> : <p>No FCM Token Found</p>}
       </header>
     </div>
   );
