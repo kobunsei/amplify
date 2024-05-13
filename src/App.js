@@ -8,28 +8,17 @@ import { requestForToken, onMessageListener } from './firebase';
 Amplify.configure(awsExports);
 
 function App({ signOut, user }) {
-  // ローカルストレージからトークンを取得して初期化
-  const [token, setToken] = useState(() => {
-    return localStorage.getItem('fcmToken') || '';
-  });
+  const [isTokenFound, setTokenFound] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
 
   // プッシュ通知の許可をリクエスト
   useEffect(() => {
-    // ローカルストレージにトークンがない場合のみ新たにトークンをリクエスト
-    if (!token) {
-      requestForToken((tokenValue) => {
-        if (tokenValue) {
-          localStorage.setItem('fcmToken', tokenValue);  // トークンをローカルストレージに保存
-          setToken(tokenValue);
-        }
-      });
-    }
+    requestForToken(setTokenFound);
     // ブラウザの通知許可を求める
     if ('Notification' in window) {
       Notification.requestPermission();
     }
-  }, [token]);
+  }, []);
 
   // フォアグラウンドで通知を受信
   useEffect(() => {
@@ -64,7 +53,10 @@ function App({ signOut, user }) {
       <header className="App-header">
         <h1>Welcome, {user.username}</h1>
         <button onClick={signOut}>Sign out</button>
-        {token ? <p>FCM Token: {token}</p> : <p>No FCM Token Found</p>}
+        {/* {isTokenFound ? <p>Notification permission enabled</p> : <p>Need notification permission</p>}
+        <h2>Notification:</h2>
+        <p>Title: {notification.title}</p>
+        <p>Body: {notification.body}</p> */}
       </header>
     </div>
   );
