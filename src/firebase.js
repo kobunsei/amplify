@@ -1,4 +1,3 @@
-// src/firebase.js
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
@@ -9,43 +8,38 @@ const firebaseConfig = {
     storageBucket: "amplity-test.appspot.com",
     messagingSenderId: '1038543419902',
     appId: '1:1038543419902:web:dcea33dbe03e1aa85068af'
-  };
+};
 
-  const firebaseApp = initializeApp(firebaseConfig);
-  const messaging = getMessaging(firebaseApp);
-  
-  export const requestForToken = (setTokenFound) => {
-    return getToken(messaging, { vapidKey: 'BFCOCpO3jSxE5wSzDXR8PTq6TmBMxgMJ-6gTHWQiFEDXOVd3maBYWEGw4Kb1nYu9XqMYp_iY_UEOwf3C2BuYJKI' })
-      .then((currentToken) => {
-        if (currentToken) {
-          console.log('current token for client: ', currentToken);
-          setTokenFound(true);
-        } else {
-          console.log('No registration token available. Request permission to generate one.');
-          setTokenFound(false);
-        }
-      })
-      .catch((err) => {
-        console.log('An error occurred while retrieving token. ', err);
+const firebaseApp = initializeApp(firebaseConfig);
+const messaging = getMessaging(firebaseApp);
+
+export const requestForToken = (setTokenFound) => {
+  return getToken(messaging, { vapidKey: 'BFCOCpO3jSxE5wSzDXR8PTq6TmBMxgMJ-6gTHWQiFEDXOVd3maBYWEGw4Kb1nYu9XqMYp_iY_UEOwf3C2BuYJKI' })
+    .then((currentToken) => {
+      if (currentToken) {
+        console.log('current token for client: ', currentToken);
+        setTokenFound(true);
+      } else {
+        console.log('No registration token available. Request permission to generate one.');
         setTokenFound(false);
-      });
-  };
-  
-  let listener = null;  // リスナーの参照を保持する変数
-  
-  export const onMessageListener = () =>
-    new Promise((resolve) => {
-      if (!listener) {
-        listener = (payload) => {
-          resolve(payload);
-        };
-        onMessage(messaging, listener);
+      }
+    })
+    .catch((err) => {
+      console.log('An error occurred while retrieving token. ', err);
+      setTokenFound(false);
+    });
+};
+
+export const onMessageListener = () =>
+  new Promise((resolve, reject) => {
+    onMessage(messaging, (payload) => {
+      if (payload.data && Object.keys(payload.data).length > 0 && !payload.notification) {
+        // データメッセージを無視する条件を追加
+        console.log('Received data message, ignoring:', payload.data);
+        reject('Data message received, no action taken.');
+      } else {
+        console.log('Received message, processing:', payload);
+        resolve(payload);
       }
     });
-  
-  export const unsubscribeListener = () => {
-    if (listener) {
-      messaging.offMessage(listener);  // Firebase SDK 9 以降の場合
-      listener = null;
-    }
-  };
+  });
