@@ -4,8 +4,13 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
 import { requestForToken, onMessageListener } from './firebase';
+import { generateClient } from "aws-amplify/api";
+import { createUserToken } from "./graphql/mutations";
+
+
 
 Amplify.configure(awsExports);
+const client = generateClient();
 
 function App({ signOut, user }) {
   const [isTokenFound, setTokenFound] = useState(false);
@@ -13,12 +18,32 @@ function App({ signOut, user }) {
 
   // プッシュ通知の許可をリクエスト
   useEffect(() => {
-    requestForToken(setTokenFound);
-    // ブラウザの通知許可を求める
+    requestForToken(setTokenFound).then(token => {
+      if (token) {
+        saveTokenToDatabase(user.userId, token);
+        setTokenFound(true);
+      } else {
+        setTokenFound(false);
+      }
+    });
+
     if ('Notification' in window) {
       Notification.requestPermission();
     }
   }, []);
+
+  const saveTokenToDatabase = async (userId, token) => {
+    try {
+      const result = await client.graphql({
+        query: createUserToken,
+        variables: { input: { userId, token } }
+      });
+      console.log('Token saved to database:', result);
+    } catch (error) {
+      console.error('Error saving token to database:', error);
+    }
+  };
+  
 
   // フォアグラウンドで通知を受信
   useEffect(() => {
