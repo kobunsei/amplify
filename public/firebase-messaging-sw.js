@@ -1,4 +1,3 @@
-// public/firebase-messaging-sw.js
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js');
 
@@ -9,7 +8,7 @@ const firebaseConfig = {
     storageBucket: "amplity-test.appspot.com",
     messagingSenderId: '1038543419902',
     appId: '1:1038543419902:web:dcea33dbe03e1aa85068af'
-  };
+};
 
 firebase.initializeApp(firebaseConfig);
 
@@ -23,5 +22,7 @@ messaging.onBackgroundMessage((payload) => {
     icon: '/favicon.ico'
   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  if (self.registration && Notification.permission === 'granted') {
+    self.registration.showNotification(notificationTitle, notificationOptions);
+  }
 });
