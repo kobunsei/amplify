@@ -13,28 +13,24 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const messaging = getMessaging(firebaseApp);
 
-export const requestForToken = async (setTokenFound) => {
-  try {
-    // サービスワーカーを明示的に登録
-    const registration = await navigator.serviceWorker.register('/service-worker.js');
-
-    // トークンを取得
-    const currentToken = await getToken(messaging, { vapidKey: 'BFCOCpO3jSxE5wSzDXR8PTq6TmBMxgMJ-6gTHWQiFEDXOVd3maBYWEGw4Kb1nYu9XqMYp_iY_UEOwf3C2BuYJKI', serviceWorkerRegistration: registration });
-
-    if (currentToken) {
-      console.log('current token for client: ', currentToken);
-      setTokenFound(true);
-      return currentToken;
-    } else {
-      console.log('No registration token available. Request permission to generate one.');
+export const requestForToken = (setTokenFound) => {
+  return getToken(messaging, { vapidKey: 'BFCOCpO3jSxE5wSzDXR8PTq6TmBMxgMJ-6gTHWQiFEDXOVd3maBYWEGw4Kb1nYu9XqMYp_iY_UEOwf3C2BuYJKI' })
+    .then((currentToken) => {
+      if (currentToken) {
+        console.log('current token for client: ', currentToken);
+        setTokenFound(true);
+        return currentToken;  // トークンを返す
+      } else {
+        console.log('No registration token available. Request permission to generate one.');
+        setTokenFound(false);
+        return null;  // トークンがない場合は null を返す
+      }
+    })
+    .catch((err) => {
+      console.log('An error occurred while retrieving token. ', err);
       setTokenFound(false);
-      return null;
-    }
-  } catch (err) {
-    console.log('An error occurred while retrieving token. ', err);
-    setTokenFound(false);
-    return null;
-  }
+      return null;  // エラーが発生した場合は null を返す
+    });
 };
 
 export const onMessageListener = () =>
