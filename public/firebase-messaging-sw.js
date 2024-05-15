@@ -22,5 +22,6 @@ messaging.onBackgroundMessage((payload) => {
     icon: '/favicon.ico'
   };
 
+  console.log('[firebase-messaging-sw.js] Showing notification');
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
