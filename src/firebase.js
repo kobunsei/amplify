@@ -1,4 +1,3 @@
-// src/firebase.js
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
@@ -9,7 +8,7 @@ const firebaseConfig = {
     storageBucket: "amplity-test.appspot.com",
     messagingSenderId: '1038543419902',
     appId: '1:1038543419902:web:dcea33dbe03e1aa85068af'
-  };
+};
 
 const firebaseApp = initializeApp(firebaseConfig);
 const messaging = getMessaging(firebaseApp);
@@ -33,7 +32,6 @@ export const requestForToken = (setTokenFound) => {
       return null;  // エラーが発生した場合は null を返す
     });
 };
-
 
 export const onMessageListener = () =>
   new Promise((resolve) => {

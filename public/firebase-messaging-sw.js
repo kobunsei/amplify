@@ -22,7 +22,5 @@ messaging.onBackgroundMessage((payload) => {
     icon: '/favicon.ico'
   };
 
-  if (self.registration && Notification.permission === 'granted') {
-    self.registration.showNotification(notificationTitle, notificationOptions);
-  }
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
