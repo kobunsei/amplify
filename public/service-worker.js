@@ -1,9 +1,7 @@
 const CACHE_NAME = 'v1';
 const urlsToCache = [
   '/',
-  '/index.html',
-  '/src/index.css',  // CSSファイルがある場合の例
-  '/src/index.js'   // JavaScriptファイルがある場合の例
+  '/index.html'
 ];
 
 self.addEventListener('install', event => {
