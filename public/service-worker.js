@@ -7,14 +7,22 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  console.log('[service-worker.js] Install event');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        console.log('[service-worker.js] Opened cache');
+        return Promise.all(
+          urlsToCache.map(url => {
+            return cache.add(url).catch(err => {
+              console.error(`[service-worker.js] Failed to cache ${url}:`, err);
+            });
+          })
+        );
       })
   );
 });
+
 
 self.addEventListener('activate', event => {
   console.log('Service Worker activating.');
