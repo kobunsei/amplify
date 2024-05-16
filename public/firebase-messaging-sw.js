@@ -10,18 +10,18 @@ const firebaseConfig = {
     appId: '1:1038543419902:web:dcea33dbe03e1aa85068af'
 };
 
-firebase.initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
 
-const messaging = firebase.messaging();
+// const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: '/favicon.ico'
-  };
+// messaging.onBackgroundMessage((payload) => {
+//   console.log('[firebase-messaging-sw.js] Received background message ', payload);
+//   const notificationTitle = payload.notification.title;
+//   const notificationOptions = {
+//     body: payload.notification.body,
+//     icon: '/favicon.ico'
+//   };
 
-  console.log('[firebase-messaging-sw.js] Showing notification');
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
+//   console.log('[firebase-messaging-sw.js] Showing notification');
+//   self.registration.showNotification(notificationTitle, notificationOptions);
+// });
