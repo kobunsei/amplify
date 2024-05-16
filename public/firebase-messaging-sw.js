@@ -12,9 +12,9 @@ importScripts('https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js'
 
 // firebase.initializeApp(firebaseConfig);
 
-const messaging = firebase.messaging();
+// const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage((payload) => {
+firebase.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
